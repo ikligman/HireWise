@@ -1,0 +1,144 @@
+/* style.css */
+:root {
+    --bg: #0b0c10;
+    --panel: #111218;
+    --panel-2: #151724;
+    --text: #e9ecf1;
+    --muted: #b6bcc7;
+    --accent: #7aa2ff;
+    --accent-2: #5be6b9;
+    --border: #26293a;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: sans-serif;
+}
+
+header {
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+}
+
+.logo {
+    width: 28px;
+    height: 28px;
+    border-radius: 10px;
+    background: conic-gradient(from 200deg, var(--accent), var(--accent-2));
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 16px;
+    padding: 16px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.card {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+}
+
+.documents {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+textarea {
+    width: 100%;
+    min-height: 140px;
+    background: #0f1120;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.actions {
+    display: grid;
+    gap: 8px;
+}
+
+button {
+    background: #0f1222;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 10px;
+    cursor: pointer;
+}
+
+.chat {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    min-height: 70vh;
+}
+
+.messages {
+    padding: 16px;
+    overflow: auto;
+}
+
+.msg {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: #151a2f;
+    display: grid;
+    place-items: center;
+}
+
+.bubble {
+    padding: 12px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: #0d1020;
+}
+
+.composer {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    padding: 12px;
+    border-top: 1px solid var(--border);
+}
+
+.input {
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: #0f1222;
+    color: var(--text);
+}
+
+.send {
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    color: #0b0c10;
+    font-weight: 700;
+}
+
+footer {
+    text-align: center;
+    padding: 10px;
+    color: var(--muted);
+}

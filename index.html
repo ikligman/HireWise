@@ -1,0 +1,50 @@
+<!-- index.html -->
+<input id="resumeFile" type="file" accept=".txt,.md,.markdown" />
+<span id="resumeCount" class="hint">0 characters</span>
+</div>
+</div>
+
+
+<div class="field">
+    <label for="jd">Job Description (paste or upload .txt/.md)</label>
+    <textarea id="jd" placeholder="Paste the job description here…"></textarea>
+    <div class="row">
+        <input id="jdFile" type="file" accept=".txt,.md,.markdown" />
+        <span id="jdCount" class="hint">0 characters</span>
+    </div>
+</div>
+
+
+<div class="actions">
+    <button id="saveDocs">Save to Browser</button>
+    <button id="clearDocs">Clear</button>
+</div>
+
+
+<div class="quick">
+    <span class="chip" data-template="improve">Improve bullet points</span>
+    <span class="chip" data-template="cover">Draft cover letter</span>
+    <span class="chip" data-template="topics">Interview prep topics</span>
+</div>
+<p class="hint">Docs are stored locally in your browser (no server yet).</p>
+</section>
+
+
+<section class="card chat" aria-label="Chat">
+    <div id="messages" class="messages" aria-live="polite"></div>
+    <form id="composer" class="composer" autocomplete="off">
+        <input id="prompt" class="input" name="prompt"
+            placeholder="Ask HireWise… e.g., 'Tailor my resume to this JD'" />
+        <button class="send" type="submit">Send</button>
+    </form>
+</section>
+</main>
+
+
+<footer>Prototype UI. Replace the stubbed AI with your backend when ready.</footer>
+
+
+<script src="script.js"></script>
+</body>
+
+</html>
