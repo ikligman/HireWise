@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+
     alias: {
       'vaul@1.1.2': 'vaul',
       'sonner@2.0.3': 'sonner',
@@ -53,7 +54,8 @@ export default defineConfig({
     outDir: 'dist',       // ← dist
   },
   server: {
-    port: 5173,           // ← 5173
-    open: true,
+      port: 5173,
+      open: true,
+      proxy: { '/api': 'http://localhost:3000' },
   },
 });
