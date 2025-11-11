@@ -54,7 +54,7 @@ export default defineConfig({
     outDir: 'dist',       // ← dist
   },
   server: {
-      port: 5173,
+      port: 5175,
       open: true,
       proxy: { '/api': 'http://localhost:3000' },
   },
