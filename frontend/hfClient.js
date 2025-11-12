@@ -27,7 +27,7 @@ app.use(express.static(__dirname));
 // });
 app.post("/api/analyze", async (req, res) => {
   try {
-    const input = req.body?.text ?? req.body; // 支援 {text:"..."} 或物件
+    const input = req.body?.text ?? req.body; 
     const result = await analyze(input);
     res.json({ ok: true, result });
   } catch (err) {
