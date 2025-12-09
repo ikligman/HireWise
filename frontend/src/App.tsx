@@ -6,16 +6,25 @@ import { Toaster } from './components/ui/sonner';
 
 type AnalysisState = 'idle' | 'loading' | 'success' | 'error';
 
+// Type for the AI analysis result
+export interface AnalysisResult {
+  bullets: string[];
+  coverLetter: string;
+  interviewPrep: { question: string; answer: string }[];
+  raw?: string;
+}
+
 export default function App() {
   const [resumeText, setResumeText] = useState('');
   const [jobDescription, setJobDescription] = useState('');
   const [analysisState, setAnalysisState] = useState<AnalysisState>('idle');
+  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleAnalyze = () => {
+  const handleAnalyze = async () => {
     // Validate input
     if (!resumeText.trim()) {
-      setErrorMessage('Please provide more resume content.');
+      setErrorMessage('Please provide your resume content.');
       setAnalysisState('error');
       return;
     }
@@ -28,12 +37,32 @@ export default function App() {
 
     // Start loading
     setErrorMessage('');
+    setAnalysisResult(null);
     setAnalysisState('loading');
 
-    // Simulate AI processing
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          resume: resumeText,
+          jobDescription: jobDescription,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.ok) {
+        throw new Error(data.error || 'Analysis failed. Please try again.');
+      }
+
+      setAnalysisResult(data.result);
       setAnalysisState('success');
-    }, 2000);
+    } catch (err) {
+      console.error('Analysis error:', err);
+      setErrorMessage(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+      setAnalysisState('error');
+    }
   };
 
   return (
@@ -48,6 +77,7 @@ export default function App() {
             jobDescription={jobDescription}
             setJobDescription={setJobDescription}
             analysisState={analysisState}
+            analysisResult={analysisResult}
             errorMessage={errorMessage}
             onAnalyze={handleAnalyze}
           />

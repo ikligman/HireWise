@@ -4,17 +4,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { FileText, MessageSquare, Lightbulb, Copy, FileSearch, AlertCircle } from 'lucide-react';
 import { Skeleton } from './ui/skeleton';
 import { Button } from './ui/button';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 import { Alert, AlertDescription } from './ui/alert';
+import type { AnalysisResult } from '../App';
 
 type AnalysisState = 'idle' | 'loading' | 'success' | 'error';
 
 interface ResultsSectionProps {
   analysisState: AnalysisState;
+  analysisResult: AnalysisResult | null;
   errorMessage?: string;
 }
 
-export function ResultsSection({ analysisState, errorMessage }: ResultsSectionProps) {
+export function ResultsSection({ analysisState, analysisResult, errorMessage }: ResultsSectionProps) {
   const [activeTab, setActiveTab] = useState('bullets');
 
   const copyToClipboard = (text: string, label: string) => {
@@ -44,7 +46,7 @@ export function ResultsSection({ analysisState, errorMessage }: ResultsSectionPr
         <div className="space-y-4">
           <div className="flex items-center gap-3 mb-6">
             <div className="animate-spin rounded-full h-5 w-5 border-2 border-[#6C63FF] border-t-transparent" />
-            <h2 className="text-gray-900">Analyzing your resume...</h2>
+            <h2 className="text-gray-900">Analyzing your resume with AI... This may take 15-30 seconds.</h2>
           </div>
           
           {/* Skeleton Tabs */}
@@ -76,7 +78,7 @@ export function ResultsSection({ analysisState, errorMessage }: ResultsSectionPr
       )}
 
       {/* Success State */}
-      {analysisState === 'success' && (
+      {analysisState === 'success' && analysisResult && (
         <>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <div className="overflow-x-auto -mx-6 px-6 sm:mx-0 sm:px-0">
@@ -119,41 +121,13 @@ export function ResultsSection({ analysisState, errorMessage }: ResultsSectionPr
             
             {/* Resume Bullets Tab */}
             <TabsContent value="bullets" className="mt-0 space-y-4">
-              <BulletPointCard
-                text="Collaborated with cross-functional teams of 5+ members to deliver software projects, resulting in 30% faster deployment cycles"
-                onCopy={() => copyToClipboard(
-                  "Collaborated with cross-functional teams of 5+ members to deliver software projects, resulting in 30% faster deployment cycles",
-                  "Bullet point"
-                )}
-              />
-              <BulletPointCard
-                text="Designed and executed multi-channel marketing campaigns reaching 50K+ users, increasing engagement by 45%"
-                onCopy={() => copyToClipboard(
-                  "Designed and executed multi-channel marketing campaigns reaching 50K+ users, increasing engagement by 45%",
-                  "Bullet point"
-                )}
-              />
-              <BulletPointCard
-                text="Resolved 100+ customer inquiries weekly with 95% satisfaction rate, implementing feedback loops that reduced ticket volume by 20%"
-                onCopy={() => copyToClipboard(
-                  "Resolved 100+ customer inquiries weekly with 95% satisfaction rate, implementing feedback loops that reduced ticket volume by 20%",
-                  "Bullet point"
-                )}
-              />
-              <BulletPointCard
-                text="Led agile development team in building scalable web applications, improving code quality metrics by 35%"
-                onCopy={() => copyToClipboard(
-                  "Led agile development team in building scalable web applications, improving code quality metrics by 35%",
-                  "Bullet point"
-                )}
-              />
-              <BulletPointCard
-                text="Optimized database queries and API performance, reducing average response time from 800ms to 200ms"
-                onCopy={() => copyToClipboard(
-                  "Optimized database queries and API performance, reducing average response time from 800ms to 200ms",
-                  "Bullet point"
-                )}
-              />
+              {analysisResult.bullets.map((bullet, index) => (
+                <BulletPointCard
+                  key={index}
+                  text={bullet}
+                  onCopy={() => copyToClipboard(bullet, "Bullet point")}
+                />
+              ))}
             </TabsContent>
             
             {/* Cover Letter Tab */}
@@ -163,7 +137,7 @@ export function ResultsSection({ analysisState, errorMessage }: ResultsSectionPr
                   variant="ghost"
                   size="sm"
                   className="absolute top-4 right-4 text-gray-600 hover:text-gray-900 hover:bg-white"
-                  onClick={() => copyToClipboard(coverLetterText, "Cover letter")}
+                  onClick={() => copyToClipboard(analysisResult.coverLetter, "Cover letter")}
                 >
                   <Copy className="w-4 h-4 mr-2" />
                   Copy
@@ -171,61 +145,33 @@ export function ResultsSection({ analysisState, errorMessage }: ResultsSectionPr
                 
                 <h3 className="text-gray-900 mb-4">Professional Cover Letter</h3>
                 
-                <div className="space-y-4 text-gray-700">
-                  <p>Dear Hiring Manager,</p>
-                  
-                  <p>I am writing to express my strong interest in the position at your organization. With a proven track record in delivering impactful results and a passion for continuous learning, I am excited about the opportunity to contribute to your team.</p>
-                  
-                  <p>Throughout my experience, I have demonstrated excellence in cross-functional collaboration, project management, and driving measurable outcomes. My ability to combine technical expertise with strong communication skills has enabled me to bridge gaps between teams and deliver solutions that exceed expectations.</p>
-                  
-                  <p>What particularly draws me to this role is the opportunity to work on challenging projects that make a real difference. I am confident that my experience in leading teams, optimizing processes, and implementing innovative solutions aligns well with your organization's goals.</p>
-                  
-                  <p>I would welcome the opportunity to discuss how my background, skills, and enthusiasm can contribute to your team's success. Thank you for considering my application.</p>
-                  
-                  <p>Sincerely,<br />Your Name</p>
+                <div className="space-y-4 text-gray-700 whitespace-pre-wrap">
+                  {analysisResult.coverLetter}
                 </div>
               </div>
             </TabsContent>
             
             {/* Interview Prep Tab */}
             <TabsContent value="interview" className="mt-0 space-y-4">
-              <InterviewQACard
-                question="Tell me about yourself"
-                answer="Focus on your professional journey, highlighting experiences relevant to this role. Structure your answer: present role → past experience → why this position. Keep it concise (60-90 seconds) and emphasize your key achievements and what makes you a strong fit."
-              />
-              <InterviewQACard
-                question="What are your greatest strengths?"
-                answer="Choose 2-3 strengths that directly relate to the job requirements. Provide specific examples that demonstrate these strengths in action. For instance, if you mention 'problem-solving,' share a concrete example of how you solved a challenging problem and the impact it had."
-              />
-              <InterviewQACard
-                question="Why are you interested in this position?"
-                answer="Research the company thoroughly. Connect your career goals with the company's mission, projects, or culture. Show genuine enthusiasm by mentioning specific aspects of the role or company that excite you. Demonstrate that you've done your homework."
-              />
+              {analysisResult.interviewPrep.map((qa, index) => (
+                <InterviewQACard
+                  key={index}
+                  question={qa.question}
+                  answer={qa.answer}
+                />
+              ))}
             </TabsContent>
           </Tabs>
           
           {/* Powered by text */}
           <div className="mt-6 pt-4 border-t border-gray-100 flex justify-end">
-            <p className="text-xs text-gray-400">Powered by OpenAI GPT-4</p>
+            <p className="text-xs text-gray-400">Powered by Mistral AI via Hugging Face</p>
           </div>
         </>
       )}
     </Card>
   );
 }
-
-const coverLetterText = `Dear Hiring Manager,
-
-I am writing to express my strong interest in the position at your organization. With a proven track record in delivering impactful results and a passion for continuous learning, I am excited about the opportunity to contribute to your team.
-
-Throughout my experience, I have demonstrated excellence in cross-functional collaboration, project management, and driving measurable outcomes. My ability to combine technical expertise with strong communication skills has enabled me to bridge gaps between teams and deliver solutions that exceed expectations.
-
-What particularly draws me to this role is the opportunity to work on challenging projects that make a real difference. I am confident that my experience in leading teams, optimizing processes, and implementing innovative solutions aligns well with your organization's goals.
-
-I would welcome the opportunity to discuss how my background, skills, and enthusiasm can contribute to your team's success. Thank you for considering my application.
-
-Sincerely,
-Your Name`;
 
 function BulletPointCard({ text, onCopy }: { text: string; onCopy: () => void }) {
   return (
@@ -247,7 +193,7 @@ function InterviewQACard({ question, answer }: { question: string; answer: strin
   return (
     <div className="rounded-xl border p-5" style={{ backgroundColor: '#FAFAFF', borderColor: '#E5E3FF' }}>
       <p className="text-gray-900 mb-3"><span style={{ fontWeight: 600 }}>Q:</span> {question}</p>
-      <p className="text-gray-700 text-sm"><span style={{ fontWeight: 600 }}>A:</span> {answer}</p>
+      <p className="text-gray-700 text-sm whitespace-pre-wrap"><span style={{ fontWeight: 600 }}>A:</span> {answer}</p>
     </div>
   );
 }

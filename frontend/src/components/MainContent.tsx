@@ -6,6 +6,7 @@ import { FileText, Briefcase, Sparkles, Upload } from 'lucide-react';
 import { Badge } from './ui/badge';
 import { ResultsSection } from './ResultsSection';
 import { toast } from 'sonner';
+import type { AnalysisResult } from '../App';
 
 type AnalysisState = 'idle' | 'loading' | 'success' | 'error';
 
@@ -15,6 +16,7 @@ interface MainContentProps {
   jobDescription: string;
   setJobDescription: (text: string) => void;
   analysisState: AnalysisState;
+  analysisResult: AnalysisResult | null;
   errorMessage: string;
   onAnalyze: () => void;
 }
@@ -25,6 +27,7 @@ export function MainContent({
   jobDescription,
   setJobDescription,
   analysisState,
+  analysisResult,
   errorMessage,
   onAnalyze
 }: MainContentProps) {
@@ -184,6 +187,7 @@ export function MainContent({
       {/* Results Section */}
       <ResultsSection
         analysisState={analysisState}
+        analysisResult={analysisResult}
         errorMessage={errorMessage}
       />
     </div>
