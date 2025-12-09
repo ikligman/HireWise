@@ -10,10 +10,10 @@
    CONFIGURATION
    ---------------------------------------------------------------------------- */
 
-// Model: Meta's Llama 3.2 3B Instruct - optimized for following instructions
+// Model
 const MODEL = "meta-llama/Llama-3.2-3B-Instruct";
 
-// HuggingFace's OpenAI-compatible chat completions endpoint
+// HuggingFace endpoint
 const API_URL = "https://router.huggingface.co/v1/chat/completions";
 
 /* ============================================================================
@@ -37,6 +37,7 @@ export async function analyze(input) {
   const resume = typeof input === "string" ? input : input?.resume || input?.text || "";
   const jobDescription = input?.jobDescription || input?.jd || "";
 
+  // At least 50 characters
   if (!resume || resume.trim().length < 50) {
     throw new Error("Please provide more resume content for analysis.");
   }
@@ -44,8 +45,10 @@ export async function analyze(input) {
   /* --------------------------------------------------------------------------
      PROMPT CONSTRUCTION
      -------------------------------------------------------------------------- */
-  const systemPrompt = `You are HireWise, an expert AI career assistant. You help job seekers improve their resumes, write cover letters, and prepare for interviews. Be specific, actionable, and professional.`;
+  const systemPrompt = `You are HireWise, an expert AI career assistant. 
+  You help job seekers improve their resumes, write cover letters, and prepare for interviews. Be specific, actionable, and professional.`;
 
+  // Call the buildPrompt function to which instructs the model to format the response with section headers
   const userPrompt = buildPrompt(resume, jobDescription);
 
   /* --------------------------------------------------------------------------
@@ -53,6 +56,7 @@ export async function analyze(input) {
      -------------------------------------------------------------------------- */
   console.log(`Calling HuggingFace API with model: ${MODEL}`);
 
+  // Call the HuggingFace API
   const response = await fetch(API_URL, {
     method: "POST",
     headers: {
@@ -101,6 +105,7 @@ export async function analyze(input) {
 
   console.log("Successfully received AI response");
   
+  // Call the parseResponse function to split the response into the different sections
   return parseResponse(generatedText);
 }
 
